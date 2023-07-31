@@ -24,7 +24,7 @@ On other systems, use the corresponding package manager and package name.
 ### Building from Source
 1. **Clone the QuirkWM repository**:
 ```
-git clone git clone https://github.com/letrad/QuirkWM.git
+git clone https://github.com/letrad/QuirkWM.git
 ```
 
 2. Change into the QuirkWM directory:
@@ -36,7 +36,7 @@ cd QuirkWM
 mkdir build
 cd build
 ```
-4. **Configure & Compile*:
+4. **Configure & Compile**:
  ```bash
  cmake ..
  make
