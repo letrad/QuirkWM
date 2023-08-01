@@ -3,3 +3,4 @@ cmake-build-debug
 quirkwm
 build/*
 build
+src/main.o
