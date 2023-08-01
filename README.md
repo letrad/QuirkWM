@@ -1,3 +1,5 @@
+<!--
+
 <h1 align="center">QuirkWM</h1>  
 QuirkWM stands tall as a remarkable tiling window manager (WM), combining simplicity and high effectiveness to revolutionize your productivity. Crafted in C and harnessing the power of X11 (the xlib library), QuirkWM presents a seamless, user-centric interface that sets a new standard for usability. Embracing a minimalist approach, it empowers you to effortlessly navigate and optimize your workspace, maximizing every inch of your screen for an unrivaled working environment. Say hello to efficiency, meet QuirkWM!
 
@@ -57,3 +59,85 @@ Contributions to QuirkWM are welcome! Please read the contributing guidelines an
 
 ## 📜 License
 QuirkWM is open source and available under the Mozilla Public License 2.0. See the LICENSE file for details.
+
+-->
+# QuirkWM
+> A simple and easy to use tiling windowmanager
+
+QuirkWM aims to provide a lightweight and efficient window management experience for users who prefer a keyboard-centric environment. With its focus on simplicity and modularity, QuirkWM targets power users, developers, and those looking to streamline their workflow by minimizing mouse usage, while allowing a certain level of customization through a configuration file. Its design principles emphasize performance, ease of use, and the ability to extend functionality through integration with other command-line tools and applications.
+
+<!-- ![](header.png) -->
+
+## Installation
+
+Right now there aren't any releases use the Development setup.
+
+## Usage example
+
+<!-- Add screen shots-->
+
+The Config has to be located at: `~/.config/quirk/config.toml`
+
+### Basic Config example
+```toml
+[wm]
+gap=10
+```
+
+_For more examples and guides, please refer to the [Wiki][wiki]._
+
+## Development setup
+
+### Unix/Linux
+
+1. Using make
+```sh
+git clone --recursive https://github.com/letrad/QuirkWM.git
+cd QuirkWM
+make all
+```
+
+2. Using cmake
+```sh
+git clone --recursive https://github.com/letrad/QuirkWM.git
+cd QuirkWM
+mkdir build
+cd build
+cmake ..
+make
+```
+
+Run using startx
+```sh
+startx ./quirkwm
+```
+
+Start using Xephyr
+```sh
+Xephyr :9 -screen 1280x720 &
+DISPLAY=:9 ./quirkwm
+```
+
+## Release History
+
+* 0.0.1
+    * Work in progress
+
+## Meta
+
+letradical – [@letradical](https://discord.com) <!-- – YourEmail@example.com -->
+
+Distributed under the Mozilla Public License 2.0 license. See ``LICENSE`` for more information.
+
+[https://github.com/letrad/QuirkWM](https://github.com/letrad/QuirkWM)
+
+## Contributing
+
+1. Fork it (<https://github.com/letrad/QuirkWM/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
+
+<!-- Markdown link & img dfn's -->
+[wiki]: https://github.com/letrad/QuirkWM/wiki
