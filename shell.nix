@@ -9,7 +9,7 @@ pkgs.mkShell {
     pkgs.tomlc99
   ];
  shellHook = ''
-    alias build='make all'
+    alias build='gcc src/main.c -ltoml -lX11 -o quirkwm'
     alias clean="rm -rf build quirkwm QuirkWM"
   '';
 }
