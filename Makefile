@@ -1,6 +1,19 @@
-all:
-	gcc ./src/main.c -o quirkwm -ltoml -lX11 
+# Variables
+SOURCES = ./src/main.c ./include/tomlc99/toml.c
+OBJECTS = $(SOURCES:.c=.o)
+CFLAGS = -std=c11 -D_GNU_SOURCE -I./include/tomlc99 -I/usr/include/X11
+LDFLAGS = -lX11
+OUTPUT = quirkwm
+
+# Targets
+all: $(OUTPUT)
+
+$(OUTPUT): $(OBJECTS)
+	gcc $(CFLAGS) $(OBJECTS) -o $(OUTPUT) $(LDFLAGS)
+
+%.o: %.c
+	gcc $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf quirkwm
+	rm -rf $(OUTPUT) $(OBJECTS)
 
