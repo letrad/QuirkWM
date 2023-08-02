@@ -116,7 +116,7 @@ Run using startx
 startx ./quirkwm
 ```
 
-Start using Xephyr
+Start using Xephyr (Only on X11)
 ```sh
 Xephyr :9 -screen 1280x720 &
 DISPLAY=:9 ./quirkwm
