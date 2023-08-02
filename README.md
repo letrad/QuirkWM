@@ -3,6 +3,9 @@
 <h1 align="center">QuirkWM</h1>  
 QuirkWM stands tall as a remarkable tiling window manager (WM), combining simplicity and high effectiveness to revolutionize your productivity. Crafted in C and harnessing the power of X11 (the xlib library), QuirkWM presents a seamless, user-centric interface that sets a new standard for usability. Embracing a minimalist approach, it empowers you to effortlessly navigate and optimize your workspace, maximizing every inch of your screen for an unrivaled working environment. Say hello to efficiency, meet QuirkWM!
 
+# ⚠️ EXPERIMENTAL
+Please use this at your own risk, it has not been thorougly tested and can cause issues to your sytstem.
+
 ## 🚀 Features
 
 - **Tiling Window Management**: Organizes your windows into a tiling pattern, eliminating any wasted space and allowing for easy navigation.
