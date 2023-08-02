@@ -3,8 +3,6 @@
 <h1 align="center">QuirkWM</h1>  
 QuirkWM stands tall as a remarkable tiling window manager (WM), combining simplicity and high effectiveness to revolutionize your productivity. Crafted in C and harnessing the power of X11 (the xlib library), QuirkWM presents a seamless, user-centric interface that sets a new standard for usability. Embracing a minimalist approach, it empowers you to effortlessly navigate and optimize your workspace, maximizing every inch of your screen for an unrivaled working environment. Say hello to efficiency, meet QuirkWM!
 
-# ⚠️ EXPERIMENTAL
-Please use this at your own risk, it has not been thorougly tested and can cause issues to your sytstem.
 
 ## 🚀 Features
 
@@ -68,6 +66,9 @@ QuirkWM is open source and available under the Mozilla Public License 2.0. See t
 > A simple and easy to use tiling windowmanager
 
 QuirkWM aims to provide a lightweight and efficient window management experience for users who prefer a keyboard-centric environment. With its focus on simplicity and modularity, QuirkWM targets power users, developers, and those looking to streamline their workflow by minimizing mouse usage, while allowing a certain level of customization through a configuration file. Its design principles emphasize performance, ease of use, and the ability to extend functionality through integration with other command-line tools and applications.
+
+# ⚠️ EXPERIMENTAL
+Please use this at your own risk, it has not been thorougly tested and can cause issues to your sytstem.
 
 <!-- ![](header.png) -->
 
