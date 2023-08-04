@@ -252,7 +252,7 @@ wm_config get_config() {
     } else {
         config.gap = default_config().gap;
     }
-    // THIS DOES NOT WORK. DO NOT SET SPAWN_PROGRAM TO TERMINAL JUST YET
+
     toml_table_t *preferences = toml_table_in(conf, "preferences");
     if (preferences && setjmp(jump_buffer) == 0) {
         toml_datum_t tmp = toml_string_in(preferences, "terminal");
@@ -314,7 +314,7 @@ int main(void) {
                 // Super + T pressed
             else if (keysym == XK_t && (ev.xkey.state & Mod4Mask)) {
 
-                spawn_program("kitty");
+                spawn_program(wm.config.terminal);
             }
                 // Arrow keys pressed (with Mod4 key)
             else if (keysym == XK_Left && (ev.xkey.state & Mod4Mask)) {

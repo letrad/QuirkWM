@@ -86,6 +86,9 @@ The Config has to be located at: `~/.config/quirk/config.toml`
 ```toml
 [wm]
 gap=10
+
+[preferences]
+terminal="st"
 ```
 
 _For more examples and guides, please refer to the [Wiki][wiki]._
