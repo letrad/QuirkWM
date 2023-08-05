@@ -7,21 +7,8 @@
 #include <string.h>
 #include <toml.h>
 #include "config.h"
-
-typedef struct WindowNode {
-    Window window;
-    struct WindowNode *next;
-} WindowNode;
-
-
-typedef struct {
-    Display *dpy;
-    Window root;
-    WindowNode *window_list;
-    int num_windows;
-    wm_config config;
-    Window last_focused_window;
-} WindowManager;
+#include "layout.h"
+#include "types.h"
 
 void spawn_program(const char *command) {
     if (fork() == 0) {
@@ -101,54 +88,6 @@ void remove_window(WindowManager *wm, Window w) {
 }
 
 
-void move_resize_window(Display *dpy, Window w, int x, int y, int width, int height) {
-    XMoveResizeWindow(dpy, w, x, y, width, height);
-}
-
-void tile_windows(WindowManager *wm) {
-    if (wm->num_windows == 0) return;
-
-    int screen_width = DisplayWidth(wm->dpy, 0);
-    int screen_height = DisplayHeight(wm->dpy, 0);
-
-    // If only one window is open, use the full screen space
-    if (wm->num_windows == 1) {
-        WindowNode *node = wm->window_list;
-        if (node != NULL) {
-            move_resize_window(wm->dpy, node->window, wm->config.gap, wm->config.gap, screen_width - 2 * wm->config.gap,
-                               screen_height - 2 * wm->config.gap);
-        }
-        return; // Early return since there is only one window
-    }
-
-    int master_width = (screen_width - wm->config.gap) / 2; // 50% for the master window
-    int stack_width = (wm->num_windows > 1) ? (screen_width - master_width - wm->config.gap * (wm->num_windows + 1)) /
-                                              (wm->num_windows - 1) : 0;
-
-    // Master window
-    WindowNode *node = wm->window_list;
-    if (node != NULL) {
-        move_resize_window(wm->dpy, node->window, wm->config.gap, wm->config.gap, master_width - wm->config.gap,
-                           screen_height - 2 * wm->config.gap);
-        node = node->next;
-    }
-
-    // Stack windows
-    for (int i = 1; node != NULL; i++) {
-        int x = master_width + wm->config.gap * i + stack_width * (i - 1);
-        int y = wm->config.gap;
-        int width = (node->next == NULL) ? screen_width - x - wm->config.gap : stack_width;
-        int height = screen_height - 2 * wm->config.gap;
-
-        move_resize_window(wm->dpy, node->window, x, y, width, height);
-        node = node->next;
-    }
-
-    // Set focus to the last focused window
-    if (wm->last_focused_window != None) {
-        XSetInputFocus(wm->dpy, wm->last_focused_window, RevertToParent, CurrentTime);
-    }
-}
 
 void set_last_focused_window(WindowManager *wm, Window w) {
     wm->last_focused_window = w;
