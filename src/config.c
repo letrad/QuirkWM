@@ -7,6 +7,7 @@ wm_config default_config() {
     wm_config config;
     config.gap = 10;
     config.terminal = "st";
+    config.modkey = "super";
     return config;
 }
 
@@ -23,6 +24,7 @@ char *config_path() {
 
 
 wm_config get_config() {
+    toml_datum_t tmp;
     wm_config config = default_config();
     char *path = config_path();
     FILE *config_file = fopen(path, "r");
@@ -44,7 +46,7 @@ wm_config get_config() {
 
     toml_table_t *wm = toml_table_in(conf, "wm");
     if (wm) {
-        toml_datum_t tmp = toml_int_in(wm, "gap");
+        tmp = toml_int_in(wm, "gap");
         if (tmp.ok && tmp.u.i != 0) {
             config.gap = tmp.u.i;
         }
@@ -52,9 +54,14 @@ wm_config get_config() {
 
     toml_table_t *preferences = toml_table_in(conf, "pref");
     if (preferences) {
-        toml_datum_t tmp = toml_string_in(preferences, "term");
+        tmp = toml_string_in(preferences, "term");
         if (tmp.ok && tmp.u.s != NULL) {
             config.terminal = strdup(tmp.u.s);
+            free(tmp.u.s);
+        }
+        tmp = toml_string_in(preferences, "modkey");
+        if (tmp.ok && tmp.u.s != NULL) {
+            config.modkey = strdup(tmp.u.s);
             free(tmp.u.s);
         }
     }
@@ -63,3 +70,5 @@ wm_config get_config() {
 
     return config;
 }
+
+

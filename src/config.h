@@ -6,6 +6,7 @@
 typedef struct {
     int gap;
     char *terminal;
+    char *modkey;
 } wm_config;
 
 wm_config get_config(void);

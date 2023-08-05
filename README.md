@@ -97,13 +97,15 @@ DISPLAY=:9 ./quirkwm
 ## 🧰 Configuration
 Currently, QuirkWM can be configured through a basic config file. Any basic understanding of TOML will be sufficient.
 
-You can learn more about configuring QuirkWM on the [Wiki]. Though, here is a quick example config:
+You can learn more about configuring QuirkWM on the [Wiki]. Though, here is a quick example config that tries to combine all elements:
 ```toml
 [wm]
 gap = 10
 
 [pref]
-term = "st"
+term = "st" # A locally installed program
+modkey = "Super" # Can be "Alt", "Ctrl", "Super", "Shift"
+
 ```
 ## 📜 Meta
 

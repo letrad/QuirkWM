@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <ctype.h>
 #include <toml.h>
 #include "config.h"
 #include "layout.h"
@@ -128,7 +129,7 @@ void focus_previous_window(WindowManager *wm) {
     }
 }
 
-void cleanup_windows(WindowManager *wm) {
+void cleanup(WindowManager *wm) {
     // Free allocated memory for the window list
     WindowNode *current = wm->window_list;
     while (current) {
@@ -138,8 +139,31 @@ void cleanup_windows(WindowManager *wm) {
     }
     wm->window_list = NULL;
     wm->num_windows = 0;
+
+    // Close the stringed configs:
+    free(wm->config.terminal);
+    free(wm->config.terminal);
 }
 
+unsigned int get_mod_mask(const char *modkey) {
+    // Allocate memory for the temp string.
+    // Size is length of the input string plus 1 for the null terminator.
+    char temp[strlen(modkey) + 1];
+
+    // Convert to lowercase.
+    for (int i = 0; modkey[i]; i++) {
+        temp[i] = tolower((unsigned char)modkey[i]);
+    }
+
+    // Null-terminate the string.
+    temp[strlen(modkey)] = '\0';
+
+    if (strcmp(temp, "alt") == 0) return Mod1Mask;
+    if (strcmp(temp, "super") == 0) return Mod4Mask;
+    if (strcmp(temp, "ctrl") == 0) return ControlMask;
+    if (strcmp(temp, "shift") == 0) return ShiftMask;
+    return 0;
+}
 
 int main(void) {
     XEvent ev;
@@ -161,12 +185,12 @@ int main(void) {
 
     /* select kind of events we are interested in */
     XSelectInput(wm.dpy, wm.root, SubstructureNotifyMask | SubstructureRedirectMask | KeyPressMask);
-
+    unsigned int mod_mask = get_mod_mask(wm.config.modkey);
     /* grab Super + Q and Super + T keys */
-    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_q), Mod4Mask, wm.root, True, GrabModeAsync, GrabModeAsync);
-    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_t), Mod4Mask, wm.root, True, GrabModeAsync, GrabModeAsync);
-    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_Left), Mod4Mask, wm.root, True, GrabModeAsync, GrabModeAsync);
-    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_Right), Mod4Mask, wm.root, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_q), mod_mask, wm.root, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_t), mod_mask, wm.root, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_Left), mod_mask, wm.root, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(wm.dpy, XKeysymToKeycode(wm.dpy, XK_Right), mod_mask, wm.root, True, GrabModeAsync, GrabModeAsync);
 
     /* event loop */
     while (1) {
@@ -175,20 +199,17 @@ int main(void) {
         if (ev.xany.type == KeyPress) {
             KeySym keysym = XLookupKeysym(&ev.xkey, 0);
 
-            // Super + Q pressed
-            if (keysym == XK_q && (ev.xkey.state & Mod4Mask)) {
-                break;
-            }
-                // Super + T pressed
-            else if (keysym == XK_t && (ev.xkey.state & Mod4Mask)) {
-
-                spawn_program(wm.config.terminal);
-            }
-                // Arrow keys pressed (with Mod4 key)
-            else if (keysym == XK_Left && (ev.xkey.state & Mod4Mask)) {
-                focus_previous_window(&wm);
-            } else if (keysym == XK_Right && (ev.xkey.state & Mod4Mask)) {
-                focus_next_window(&wm);
+            // Check if the modifier key is held down
+            if (ev.xkey.state & mod_mask) {
+                if (keysym == XK_q) {
+                    break;
+                } else if (keysym == XK_t) {
+                    spawn_program(wm.config.terminal);
+                } else if (keysym == XK_Left) {
+                    focus_previous_window(&wm);
+                } else if (keysym == XK_Right) {
+                    focus_next_window(&wm);
+                }
             }
         } else if (ev.xany.type == MapRequest) {
             XMapRequestEvent *e = &ev.xmaprequest;
@@ -211,10 +232,8 @@ int main(void) {
     }
 
     // Clean up and close connection
-    cleanup_windows(&wm);
+    cleanup(&wm);
     XCloseDisplay(wm.dpy);
-    // Free string configs
-    free(wm.config.terminal);
     return 0;
 
 }
