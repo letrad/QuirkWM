@@ -10,7 +10,7 @@ wm_config default_config() {
     return config;
 }
 
-char *config_path(){
+char *config_path() {
     char *xdg_config_home = getenv("XDG_CONFIG_HOME");
     char *config_path = malloc(200);
     if (xdg_config_home) {

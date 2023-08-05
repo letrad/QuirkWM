@@ -88,7 +88,6 @@ void remove_window(WindowManager *wm, Window w) {
 }
 
 
-
 void set_last_focused_window(WindowManager *wm, Window w) {
     wm->last_focused_window = w;
 }

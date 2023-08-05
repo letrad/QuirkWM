@@ -9,7 +9,9 @@ typedef struct {
 } wm_config;
 
 wm_config get_config(void);
+
 char *config_path(void);
+
 wm_config default_config(void);
 
 #endif // CONFIG_H

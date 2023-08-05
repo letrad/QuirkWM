@@ -1,6 +1,7 @@
 #include "layout.h"
 #include "types.h"
 #include <X11/Xlib.h>
+
 void move_resize_window(Display *dpy, Window w, int x, int y, int width, int height) {
     XMoveResizeWindow(dpy, w, x, y, width, height);
 }
@@ -41,7 +42,8 @@ void tile_windows(WindowManager *wm) {
     calculate_window_dimensions(wm, &master_width, &stack_width, screen_width);
 
     if (wm->num_windows == 1) {
-        move_resize_window(wm->dpy, wm->window_list->window, wm->config.gap, wm->config.gap, screen_width - 2 * wm->config.gap,
+        move_resize_window(wm->dpy, wm->window_list->window, wm->config.gap, wm->config.gap,
+                           screen_width - 2 * wm->config.gap,
                            screen_height - 2 * wm->config.gap);
     } else {
         WindowNode *node = wm->window_list;

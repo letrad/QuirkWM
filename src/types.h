@@ -1,5 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
+
 #include <X11/Xlib.h>
 #include "config.h"
 
