@@ -42,11 +42,14 @@ void spawn_program(const char *command) {
             }
             args[i] = NULL;
 
-            execvp(args[0], args);
-            free(command_copy); // Free the duplicated string
-            perror("Failed to launch program");
-            exit(1);
+            if (execvp(args[0], args) == -1) { // If execvp fails, it returns -1
+                perror("Failed to launch program");
+                exit(1);
+            }
+
+            free(command_copy); // free memory in case execvp fails
         }
+
         exit(0); // Exit child process
     }
 
@@ -200,11 +203,8 @@ void cleanup_windows(WindowManager *wm) {
 }
 
 
-
-
 int main(void) {
     XEvent ev;
-    wm_config wmConfig;
     Display *dpy = XOpenDisplay(NULL);
     if (dpy == NULL) {
         fprintf(stderr, "Cannot open display\n");
