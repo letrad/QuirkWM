@@ -23,20 +23,23 @@ char *config_path(){
 
 
 wm_config get_config() {
-    wm_config config;
-    FILE *config_file;
+    wm_config config = default_config();
+    char *path = config_path();
+    FILE *config_file = fopen(path, "r");
+    free(path); // Free the allocated memory
 
-    char errbuf[200];
-    config_file = fopen(config_path(), "r");
     if (!config_file) {
         printf("There is no config file.");
-        return default_config();
+        return config;
     }
 
+    char errbuf[200];
     toml_table_t *conf = toml_parse_file(config_file, errbuf, sizeof(errbuf));
+    fclose(config_file); // Close the file early
+
     if (!conf) {
         printf("Parsing error: %s\n", errbuf);
-        return default_config();
+        return config;
     }
 
     toml_table_t *wm = toml_table_in(conf, "wm");
@@ -44,11 +47,7 @@ wm_config get_config() {
         toml_datum_t tmp = toml_int_in(wm, "gap");
         if (tmp.ok && tmp.u.i != 0) {
             config.gap = tmp.u.i;
-        } else {
-            config.gap = default_config().gap;
         }
-    } else {
-        config.gap = default_config().gap;
     }
 
     toml_table_t *preferences = toml_table_in(conf, "pref");
@@ -57,16 +56,10 @@ wm_config get_config() {
         if (tmp.ok && tmp.u.s != NULL) {
             config.terminal = strdup(tmp.u.s);
             free(tmp.u.s);
-        } else {
-            config.terminal = default_config().terminal;
         }
-    } else {
-        config.terminal = default_config().terminal;
     }
 
-
     toml_free(conf);
-    fclose(config_file);
 
     return config;
 }
