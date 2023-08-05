@@ -68,6 +68,11 @@ void spawn_program(const char *command) {
 
 void add_window(WindowManager *wm, Window w) {
     WindowNode *new_node = malloc(sizeof(WindowNode));
+    if (new_node == NULL) {
+        // FIXME: Unlikely, handle condition when there isn't enough memory
+        // Right now, it just doesn't create a new window, even when there's none
+        return;
+    }
     new_node->window = w;
     new_node->next = NULL;
 
