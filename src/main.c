@@ -6,17 +6,12 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <toml.h>
-#include <setjmp.h>
+#include "config.h"
 
 typedef struct WindowNode {
     Window window;
     struct WindowNode *next;
 } WindowNode;
-
-typedef struct {
-    int gap;
-    char *terminal;
-} wm_config;
 
 
 typedef struct {
@@ -27,12 +22,6 @@ typedef struct {
     wm_config config;
     Window last_focused_window;
 } WindowManager;
-
-jmp_buf jump_buffer;
-
-void handle_segfault(int sig) {
-    longjmp(jump_buffer, 1);
-}
 
 void spawn_program(const char *command) {
     if (fork() == 0) {
@@ -210,71 +199,7 @@ void cleanup_windows(WindowManager *wm) {
     wm->num_windows = 0;
 }
 
-wm_config default_config() {
-    wm_config config;
-    config.gap = 32;
-    config.terminal = "kitty";
-    return config;
-}
 
-
-wm_config get_config() {
-    wm_config config;
-
-    FILE *config_file;
-    char errbuf[200];
-    signal(SIGSEGV, handle_segfault);
-
-    char *xdg_config_home = getenv("XDG_CONFIG_HOME");
-    char config_path[200];
-
-    if (xdg_config_home) {
-        snprintf(config_path, sizeof(config_path), "%s/quirk/config.toml", xdg_config_home);
-    } else {
-        snprintf(config_path, sizeof(config_path), "%s/.config/quirk/config.toml", getenv("HOME"));
-    }
-
-    config_file = fopen(config_path, "r");
-    if (!config_file) {
-        printf("There is no config file.");
-        return default_config();
-    }
-
-    toml_table_t *conf = toml_parse_file(config_file, errbuf, sizeof(errbuf));
-    if (!conf) {
-        printf("Parsing error: %s\n", errbuf);
-        return default_config();
-    }
-
-    toml_table_t *wm = toml_table_in(conf, "wm");
-    if (wm && setjmp(jump_buffer) == 0) {
-        toml_datum_t tmp = toml_int_in(wm, "gap");
-        if (tmp.ok && tmp.u.i != 0) {
-            config.gap = tmp.u.i;
-        } else {
-            config.gap = default_config().gap;
-        }
-    } else {
-        config.gap = default_config().gap;
-    }
-
-    toml_table_t *preferences = toml_table_in(conf, "preferences");
-    if (preferences && setjmp(jump_buffer) == 0) {
-        toml_datum_t tmp = toml_string_in(preferences, "terminal");
-        if (tmp.ok && tmp.u.s != NULL) {
-            config.terminal = tmp.u.s;
-        } else {
-            config.terminal = default_config().terminal;
-        }
-    } else {
-        config.terminal = default_config().terminal;
-    }
-
-    toml_free(conf);
-    fclose(config_file);
-
-    return config;
-}
 
 
 int main(void) {
@@ -350,6 +275,8 @@ int main(void) {
     // Clean up and close connection
     cleanup_windows(&wm);
     XCloseDisplay(wm.dpy);
-
+    // Free string configs
+    free(wm.config.terminal);
     return 0;
+
 }

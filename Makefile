@@ -1,7 +1,7 @@
 # Variables
-SOURCES = ./src/main.c ./include/tomlc99/toml.c
+SOURCES = ./src/main.c ./src/config.c ./include/tomlc99/toml.c
 OBJECTS = $(SOURCES:.c=.o)
-CFLAGS = -std=c11 -D_GNU_SOURCE -I./include/tomlc99 -I/usr/include/X11
+CFLAGS = -std=c11 -D_GNU_SOURCE -I./include -I./include/tomlc99 -I/usr/include/X11
 LDFLAGS = -lX11
 OUTPUT = quirkwm
 
@@ -16,4 +16,3 @@ $(OUTPUT): $(OBJECTS)
 
 clean:
 	rm -rf $(OUTPUT) $(OBJECTS)
-
