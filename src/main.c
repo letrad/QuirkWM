@@ -11,6 +11,27 @@
 #include "layout.h"
 #include "types.h"
 
+int strsplit(const char *txt, char delim, char ***tokens) {
+    int *tklen, *t, count = 1;
+    char **arr, *p = (char *) txt;
+
+    while (*p != '\0') if (*p++ == delim) count += 1;
+    t = tklen = calloc(count, sizeof (int));
+    for (p = (char *) txt; *p != '\0'; p++) *p == delim ? *t++ : (*t)++;
+    *tokens = arr = malloc(count * sizeof (char *));
+    t = tklen;
+    p = *arr++ = calloc(*(t++) + 1, sizeof (char *));
+    while (*txt != '\0') {
+        if (*txt == delim) {
+            p = *arr++ = calloc (*(t++) + 1, sizeof (char *));
+            txt++;
+        }
+        else *p++ = *txt++;
+    }
+    free(tklen);
+    return count;
+}
+
 void spawn_program(const char *command) {
     if (fork() == 0) {
         // Child process
@@ -18,24 +39,31 @@ void spawn_program(const char *command) {
             // Grandchild process
             setsid(); // Create a new session
 
-            // Tokenize the command to pass to execvp
-            char *args[64];
-            int i = 0;
+            // Make a copy of the command arguments
+            size_t size_of_command = strlen(command);
+            char *command_copy = malloc(size_of_command + 9);
+            memcpy(command_copy, command, size_of_command);
 
-            char *command_copy = strdup(command);
-            char *token = strtok(command_copy, " ");
-            while (token) {
-                args[i++] = token;
-                token = strtok(NULL, " ");
-            }
-            args[i] = NULL;
+            // Tokenize the command to pass to execvp
+
+            strcat(command_copy, " replace");
+            char **args = NULL;
+            int count = strsplit(command_copy, ' ', &args);
+
+            args[count - 1] = NULL; // the last argument is replace which we are nulling out for execve
 
             if (execvp(args[0], args) == -1) { // If execvp fails, it returns -1
                 perror("Failed to launch program");
                 exit(1);
             }
 
-            free(command_copy); // free memory in case execvp fails
+            // free memory in case execvp fails
+            for (int i = 0; i < count - 1; i++) {
+                free(args[i]);
+            }
+
+            free(args);
+            free(command_copy);
         }
 
         exit(0); // Exit child process
@@ -44,7 +72,6 @@ void spawn_program(const char *command) {
     // Parent process waits for the child to exit
     wait(NULL);
 }
-
 
 void add_window(WindowManager *wm, Window w) {
     WindowNode *new_node = malloc(sizeof(WindowNode));
