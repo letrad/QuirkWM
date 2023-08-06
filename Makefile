@@ -16,11 +16,11 @@ INCDIRS = -I/usr/X11R6/include -I/usr/local/include $(LOCINCDIRS)
 LIBDIRS = -L/usr/X11R6/lib -L/usr/local/lib
 else ifeq ($(OS), FreeBSD)
 CC = cc
-INCDIRS = -I/usr/local/include
+INCDIRS = -I/usr/local/include $(LOCINCDIRS)
 LIBDIRS = -L/usr/local/lib
 else ifeq ($(OS), NetBSD)
 CC = cc
-INCDIRS = -I/usr/X11R7/include -I/usr/pkg/include
+INCDIRS = -I/usr/X11R7/include -I/usr/pkg/include $(LOCINCDIRS)
 LIBDIRS = -L/usr/X11R7/lib -L/usr/pkg/lib
 LDFLAGS = $(LDFLAGS) -Wl,-R/usr/X11R7/lib,-R/usr/pkg/lib
 else ifeq ($(OS), Linux)
@@ -29,7 +29,7 @@ INCDIRS = -I/usr/include/X11 $(LOCINCDIRS)
 LIBDIRS = -L/usr/lib/X11 -L/usr/local/lib
 else
 CC = cc
-INCDIRS = -I/usr/local/include -I/usr/X11R6/include
+INCDIRS = -I/usr/local/include -I/usr/X11R6/include $(LOCINCDIRS)
 LIBDIRS = -L/usr/local/lib -L/usr/X11R6/lib
 endif
 
