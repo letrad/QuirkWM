@@ -41,16 +41,18 @@ void spawn_program(const char *command) {
 
             // Make a copy of the command arguments
             size_t size_of_command = strlen(command);
-            char *command_copy = malloc(size_of_command + 9);
+            char *command_copy = malloc(size_of_command + 1); // +1 for null terminator
             memcpy(command_copy, command, size_of_command);
+            command_copy[size_of_command] = '\0'; // Add null-terminator
+
 
             // Tokenize the command to pass to execvp
 
-            strcat(command_copy, " replace");
             char **args = NULL;
             int count = strsplit(command_copy, ' ', &args);
 
-            args[count - 1] = NULL; // the last argument is replace which we are nulling out for execve
+            args = realloc(args, (count + 1) * sizeof(char*));
+            args[count] = NULL; // Set the last element to NULL
 
             if (execvp(args[0], args) == -1) { // If execvp fails, it returns -1
                 perror("Failed to launch program");
