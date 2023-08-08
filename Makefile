@@ -1,12 +1,12 @@
 # Get all .c files from src/ directory
 SRC_DIR = ./src
-SOURCES = $(wildcard $(SRC_DIR)/*.c) ./include/tomlc99/toml.c
+SOURCES = $(wildcard $(SRC_DIR)/*.c) ./vendor/tomlc99/toml.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
 LDFLAGS = -lX11
 
-LOCINCDIRS = -I./include -I./include/tomlc99
+LOCINCDIRS = -I./include -I./vendor/tomlc99
 
 OS := $(shell uname)
 

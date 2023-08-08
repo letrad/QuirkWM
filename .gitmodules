@@ -1,3 +1,6 @@
 [submodule "include/tomlc99"]
 	path = include/tomlc99
 	url = https://github.com/cktan/tomlc99
+[submodule "vendor/tomlc99"]
+	path = vendor/tomlc99
+	url = https://github.com/cktan/tomlc99
